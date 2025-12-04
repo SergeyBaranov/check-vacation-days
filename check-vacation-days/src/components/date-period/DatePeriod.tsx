@@ -10,7 +10,7 @@ const onChange: CheckboxProps['onChange'] = (e) => {
 
 export const DatePeriod: React.FC = () => (
   <>
-    <Layout style={{ maxWidth: '100hw', background: 'transparent', textAlign: 'left' }}>
+    <Layout style={{ maxWidth: '100%', background: 'transparent', textAlign: 'left' }}>
       <Card style={{display: 'flex', flexDirection: 'column'}} >
          <Paragraph>
           Если вы хотите выбрать отпуск, выберите даты начала и окончания
