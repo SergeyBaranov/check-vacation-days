@@ -21,10 +21,11 @@ const contentStyle: React.CSSProperties = {
 const App: React.FC = () => {
   const [ukgDays, setUkgDays] = React.useState<number>(0);
   const [rfDays, setRfDays] = React.useState<number>(0);
-  const [resultUkg, setResultUkg] = React.useState<number>(0);
-  const [resultRf, setResultRf] = React.useState<number>(0);
-  // const [vacationDays, setVacationDays] = React.useState<number>(0);
-  // const [days, setDays] = React.useState<number>(0);
+  const [resultUkg, setResultUkg] = React.useState<number>(0); // показываем сколько дней отпуска осталось по UKG
+  const [resultRf, setResultRf] = React.useState<number>(0); // показываем сколько дней отпуска осталось по ТК РФ
+  // const [plannedVacationDays, setPlannedVacationDays] = React.useState<number>(0); //показываем сколько пользователь хочет взять дней отпуска
+  const [plannedVacationDays, setPlannedVacationDays] = React.useState<string[]>([]);
+  
 
   const handleCalculateVacationDays = () => {
     setResultUkg(ukgDays);
@@ -45,10 +46,11 @@ const App: React.FC = () => {
               onRfChange={setRfDays}
               onSubmit={handleCalculateVacationDays}
             />
-            <DatePeriod />
+            <DatePeriod  onChange={setPlannedVacationDays}/>
             <ShowVacationdatesCard
               ukgDays={resultUkg}
               rfDays={resultRf}
+              plannedVacationDays={plannedVacationDays}
             />
           </Layout>
         </Layout.Content>

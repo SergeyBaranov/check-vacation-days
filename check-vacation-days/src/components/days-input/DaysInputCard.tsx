@@ -64,7 +64,7 @@ export const DaysInputcard: React.FC<DaysInputCardProps> = ({
           style={{width: '100%', marginTop: '1.5rem'}}
           onClick={onSubmit}
         >
-          Рассчитать
+          Передать количество дней
         </Button>
 
         {/* добавляем подсказку что надо сделать если поля не введены */}
