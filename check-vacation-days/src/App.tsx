@@ -19,11 +19,16 @@ const contentStyle: React.CSSProperties = {
 
 
 const App: React.FC = () => {
-  const [vacationDays, setVacationDays] = React.useState<number>(0);
-  const [days, setDays] = React.useState<number>(0);
+  const [ukgDays, setUkgDays] = React.useState<number>(0);
+  const [rfDays, setRfDays] = React.useState<number>(0);
+  const [resultUkg, setResultUkg] = React.useState<number>(0);
+  const [resultRf, setResultRf] = React.useState<number>(0);
+  // const [vacationDays, setVacationDays] = React.useState<number>(0);
+  // const [days, setDays] = React.useState<number>(0);
 
   const handleCalculateVacationDays = () => {
-    setDays(vacationDays);
+    setResultUkg(ukgDays);
+    setResultRf(rfDays);
   };  
 
   return (
@@ -34,12 +39,17 @@ const App: React.FC = () => {
           <TopTitle />
           <Layout style={{  display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
             <DaysInputcard
-              value={vacationDays}
-              onChange={setVacationDays}
+              ukgValue={ukgDays}
+              rfValue={rfDays}
+              onUkgChange={setUkgDays}
+              onRfChange={setRfDays}
               onSubmit={handleCalculateVacationDays}
             />
             <DatePeriod />
-            <ShowVacationdatesCard days={days.toString()}/>
+            <ShowVacationdatesCard
+              ukgDays={resultUkg}
+              rfDays={resultRf}
+            />
           </Layout>
         </Layout.Content>
       </Layout>

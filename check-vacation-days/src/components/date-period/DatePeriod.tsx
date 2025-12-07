@@ -17,7 +17,7 @@ export const DatePeriod: React.FC = () => (
         </Paragraph>
         <RangePicker style={{width: '100%', marginBottom: '1rem'}}/>
         
-        <Checkbox onChange={onChange} style={{width: '100%', marginBottom: '1rem'}}>Взять полдня</Checkbox>
+        <Checkbox onChange={onChange} style={{width: '100%', marginBottom: '1rem'}}>Использовать производственный календарь РФ</Checkbox>
         <Button type="primary" style={{width: '100%'}}>Сделать запрос</Button>
       </Card>
     </Layout>
