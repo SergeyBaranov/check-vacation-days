@@ -12,6 +12,7 @@ const { RangePicker } = DatePicker;
 export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
   const [selectedDates, setSelectedDates] = React.useState<[Dayjs, Dayjs] | null>(null);
 
+  // обработка изменения выбранных дат
   const handleChange = (dates: [Dayjs | null, Dayjs | null] | null): void => {
     if (dates && dates[0] && dates[1]) {
       setSelectedDates([dates[0], dates[1]]);
@@ -25,15 +26,16 @@ export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
     return current && current < dayjs().startOf('day');
   };
 
+  // при нажатии на кнопку формируем массив строк с выбранными датами и передаем его в onChange
   const handleButtonClick = () => {
     if (!selectedDates) {
       onChange([]);
       return;
     }
-    const [start, end] = selectedDates;
+    const [start, end] = selectedDates;  //даты начала и конца отпуска
     const datesArray: string[] = [];
-    let current = start;
-    while (current.isBefore(end) || current.isSame(end, 'day')) {
+    let current = start; // дата для старта отпуска
+    while (current.isBefore(end) || current.isSame(end, 'day')) { //но дата начала отпуска не должна быть раньше текущей даты
       datesArray.push(current.format('YYYY-MM-DD'));
       current = current.add(1, 'day');
     }
@@ -54,7 +56,7 @@ export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
           onChange={handleChange}
           disabledDate={disabledDate} // запрещаем выбирать дату до текущего дня
         />
-        
+        {/* кнопка для передачи диапазона дат в поле аппрува */}
         <Button
           type="primary"
           style={{width: '100%'}}

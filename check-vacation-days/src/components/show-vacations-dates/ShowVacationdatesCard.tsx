@@ -15,10 +15,11 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({ukg
   const plannedDaysCount = plannedVacationDays.length;
   const isDaysExceeded = (plannedDaysCount) > rfDays;
 
-  // получаем диапазон дат
+  // получаем диапазон дат выбранных в календаре
   const startDate = plannedVacationDays[0] ? dayjs(plannedVacationDays[0]).format('DD.MM.YYYY') : null;
   const endDate = plannedVacationDays[1] ? dayjs(plannedVacationDays[1]).format('DD.MM.YYYY') : null;
 
+  // функция для отправки уведомления об успешной отправке запроса
   const handleSend = () => {
     notification.success({
       message: 'Запрос отправлен',
@@ -56,7 +57,7 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({ukg
             style={{
               margin: '0',
               color: isDaysExceeded ? 'red' : undefined}}>
-            {plannedVacationDays.length}
+            {plannedVacationDays.length} {/* подсчитываем сколько дней запланировано в календаре в отпуск */}
           </Title>
           {/* выводим диапазон дней */}
           {startDate && endDate && (
@@ -73,6 +74,7 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({ukg
             showIcon
           />
         )}
+        {/* кнопка будет работать только если количество дней в днях оидаемого и планируемого отпуска не будет равно 0 */}
         <Button
           type="primary"
           onClick={handleSend}
