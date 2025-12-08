@@ -45,7 +45,6 @@ export const DaysInputcard: React.FC<DaysInputCardProps> = ({
         <Paragraph>
           Введите количество дней которые осталось у вас по ТК рФ
         </Paragraph>
-        {/* <Checkbox>Учитывать производственный календарь</Checkbox> */}
         <Tooltip title="Максимум: 28 дней">
           <InputNumber 
             min={0}
@@ -66,15 +65,6 @@ export const DaysInputcard: React.FC<DaysInputCardProps> = ({
         >
           Передать количество дней
         </Button>
-
-        {/* добавляем подсказку что надо сделать если поля не введены */}
-        {(ukgValue == null || rfValue == null) && (
-          <Text type="danger" style={{ display: 'block', marginTop: '0.5rem' }}>
-            {ukgValue == null && rfValue == null && "Заполните оба поля, чтобы продолжить"}
-            {ukgValue == null && rfValue != null && "Введите количество дней в UKG"}
-            {rfValue == null && ukgValue != null && "Введите количество дней по ТК РФ"}
-          </Text>
-        )}
       </Card>
     </Layout>
   </>
