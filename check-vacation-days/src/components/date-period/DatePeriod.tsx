@@ -3,7 +3,7 @@ import { Card, Layout, Typography, DatePicker, Button } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 
 interface DatePeriodProps {
-  onChange: (days: string[]) => void;
+  onChange: (data: { dates: string[], start: string, end: string }) => void;
 }
 
 const {Paragraph } = Typography;
@@ -29,17 +29,33 @@ export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
   // при нажатии на кнопку формируем массив строк с выбранными датами и передаем его в onChange
   const handleButtonClick = () => {
     if (!selectedDates) {
-      onChange([]);
+      onChange({ dates: [], start: '', end: '' });
       return;
     }
-    const [start, end] = selectedDates;  //даты начала и конца отпуска
+    const [start, end] = selectedDates;
     const datesArray: string[] = [];
-    let current = start; // дата для старта отпуска
-    while (current.isBefore(end) || current.isSame(end, 'day')) { //но дата начала отпуска не должна быть раньше текущей даты
+    let current = start;
+    while (current.isBefore(end) || current.isSame(end, 'day')) {
+      // добавляем все дни, включая выходные
       datesArray.push(current.format('YYYY-MM-DD'));
       current = current.add(1, 'day');
     }
-    onChange(datesArray);
+    onChange({
+      dates: datesArray,
+      start: start.format('YYYY-MM-DD'),
+      end: end.format('YYYY-MM-DD')
+    });
+  };
+
+  // функция для рендера дат с подсветкой выходных
+  const dateRender = (current: Dayjs) => {
+    const dayOfWeek = current.day(); // 0 - воскресенье, 6 - суббота
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    return (
+      <div style={{ color: isWeekend ? 'red' : 'inherit' }}>
+        {current.date()}
+      </div>
+    );
   };
 
   return (
@@ -55,6 +71,7 @@ export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
           }}
           onChange={handleChange}
           disabledDate={disabledDate} // запрещаем выбирать дату до текущего дня
+          dateRender={dateRender}
         />
         {/* кнопка для передачи диапазона дат в поле аппрува */}
         <Button

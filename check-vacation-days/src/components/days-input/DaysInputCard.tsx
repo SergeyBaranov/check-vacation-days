@@ -1,71 +1,50 @@
-import React from 'react';
-import { Card, Layout, InputNumber, Typography, Button, Tooltip } from 'antd';
+import React, { useState } from 'react';
+import { Card, Layout, InputNumber, Typography, Button, Space } from 'antd';
 
-const { Text, Paragraph } = Typography;
+const { Text, Title } = Typography;
 
-interface DaysInputCardProps {
-  ukgValue: number;
-  rfValue: number;
-  onUkgChange: (value: number) => void;
-  onRfChange: (value: number) => void;
-  onSubmit?: () => void;
-}
+export const DaysInputCard: React.FC = () => {
+  const [value, setValue] = useState<number>(28);
+  const [isEditing, setIsEditing] = useState(false);
 
-
-export const DaysInputcard: React.FC<DaysInputCardProps> = ({
-    ukgValue,
-    rfValue,
-    onUkgChange,
-    onRfChange,
-    onSubmit
-  }) => (
-  <>
-    <Layout style={{ maxWidth: '300px', background: 'transparent', textAlign: 'left' }}>
-      <Card >
-        <Paragraph>
-          Введите количество дней которые отображены у вас в аккаунте UKG
-        </Paragraph>
-        <Tooltip title="Максимум: 24 дня">
-          <InputNumber 
-            min={0}
-            max={Math.min(rfValue ?? 24, 24)}
-            placeholder="Введите количество дней"
-            style={{margin: '0 0 1rem 0'}}
-            value={ukgValue}
-            onChange={(val) => {
-              if (typeof val === "number") onUkgChange(val);
-            }}
-          />
-        </Tooltip>
-        <Paragraph>
-          <Text type="secondary" >
-            Для автоматического подсчета свободных дней для отпуска сравните количество дней с производственным календарем
-          </Text>
-        </Paragraph>
-        <Paragraph>
-          Введите количество дней которые осталось у вас по ТК рФ
-        </Paragraph>
-        <Tooltip title="Максимум: 28 дней">
-          <InputNumber 
-            min={0}
-            max={28}
-            placeholder="Введите количество дней"
-            style={{margin: '0 0 1rem 0'}}
-            value={rfValue}
-            onChange={(val) => {
-              if (typeof val === "number") onRfChange(val);
-            }}
-          />
-        </Tooltip>
-        <Button
-          disabled={!ukgValue || !rfValue}
-          type="primary"
-          style={{width: '100%', marginTop: '1.5rem'}}
-          onClick={onSubmit}
-        >
-          Передать количество дней
-        </Button>
+  return (
+    <Layout style={{ maxWidth: 300, background: 'transparent' }}>
+      <Card>
+        {!isEditing ? (
+          <Space align="center" style={{ display: 'flex', flexDirection: 'column', alignContent: 'left', gap: '1rem',  width: '100%' }}>
+            <Title level={1} style={{fontSize: '48px', margin: 0}}>{value}</Title>
+            <Text > Количество дней отпуска в текущем году</Text>
+            <Button
+              type="primary"
+              onClick={() => setIsEditing(true)}
+              style={{ width: '100%' }}
+            >
+              Редактировать
+            </Button>
+          </Space>
+        ) : (
+          <Space align="center" style={{ display: 'flex', flexDirection: 'column', alignContent: 'left', gap: '1rem' }}>
+            <InputNumber
+              min={0}
+              max={28}
+              value={value}
+              autoFocus
+              onChange={(val) => {
+                if (typeof val === 'number') setValue(val);
+              }}
+              onBlur={() => setIsEditing(false)}
+            />
+            <Text >Количество дней отпуска в текущем году</Text>
+            <Button
+              type="primary"
+              onClick={() => setIsEditing(false)}
+              style={{ width: '100%' }}
+            >
+              Сохранить
+            </Button>
+          </Space>
+        )}
       </Card>
     </Layout>
-  </>
-)
+  );
+};

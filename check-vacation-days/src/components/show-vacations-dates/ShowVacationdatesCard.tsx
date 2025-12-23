@@ -5,86 +5,101 @@ import dayjs from 'dayjs';
 const { Paragraph, Title, Text} = Typography;
 
 interface ShowVacationdatesCardProps {
-  ukgDays: number;
   rfDays: number;
-  plannedVacationDays?: string[]; //показываем какие дни пользователь забронировал
+  plannedVacationDays?: string[];
+  vacationStart?: string;
+  vacationEnd?: string;
+  onSend?: () => void;
 }
 
-export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({ukgDays, rfDays, plannedVacationDays = [],}) => {
+
+export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({
+    rfDays,
+    plannedVacationDays = [],
+    vacationStart,
+    vacationEnd,
+    onSend,
+  }) => {
   {/**проверяем что количество дней меньше или равно дням по ТК РФ и если условие верно - показываем или показываем с ошибкой*/}
   const plannedDaysCount = plannedVacationDays.length;
   const isDaysExceeded = (plannedDaysCount) > rfDays;
 
   // получаем диапазон дат выбранных в календаре
-  const startDate = plannedVacationDays[0] ? dayjs(plannedVacationDays[0]).format('DD.MM.YYYY') : null;
-  const endDate = plannedVacationDays[1] ? dayjs(plannedVacationDays[1]).format('DD.MM.YYYY') : null;
+  // const startDate = plannedVacationDays[0] ? dayjs(plannedVacationDays[0]).format('DD.MM.YYYY') : null;
+  // const endDate = plannedVacationDays[1] ? dayjs(plannedVacationDays[1]).format('DD.MM.YYYY') : null;
 
-  // функция для отправки уведомления об успешной отправке запроса
+  const startDate = vacationStart
+  ? dayjs(vacationStart).format('DD.MM.YYYY')
+  : null;
+
+  const endDate = vacationEnd
+    ? dayjs(vacationEnd).format('DD.MM.YYYY')
+    : null;
+
   const handleSend = () => {
     notification.success({
+      title: 'Успешно',
       message: 'Запрос отправлен',
       description: 'Ваш запрос на отпуск отправлен в отдел кадров.',
       placement: 'topRight',
-      title: undefined
     });
+
+    onSend?.(); // ← КЛЮЧЕВО
   };
 
   return (
   
     <Layout style={{ maxWidth: '300px', background: 'transparent', textAlign: 'left', gap: '1rem' }}>
       
-      <Card>
-        <Paragraph>
-          Количество свободных дней по UKG
-        </Paragraph>
-        <Title level={1} style={{margin: '0'}}>
-          {ukgDays || 0}
-        </Title>
-        <Paragraph>
-          Количество свободных дней по ТК РФ
-        </Paragraph>
-        <Title level={1} style={{margin: '0'}}>
-          {rfDays || 0}
-        </Title>
-      </Card>
-      <Card>
-        <Paragraph>
-          <Text type="secondary">
-            Запланированное количество дней отпуска
-          </Text>
-          <Title
-            level={1}
-            style={{
-              margin: '0',
-              color: isDaysExceeded ? 'red' : undefined}}>
-            {plannedVacationDays.length} {/* подсчитываем сколько дней запланировано в календаре в отпуск */}
-          </Title>
-          {/* выводим диапазон дней */}
-          {startDate && endDate && (
-            <Paragraph style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>
-              Запланированный отпуск с {startDate} по {endDate}
-            </Paragraph>
-          )}
-        </Paragraph>
-        {/* проверяем что количество дней меньше или равно дням по ТК РФ */}
-        {isDaysExceeded && (
+      {plannedVacationDays.length === 0 ? (
+        <Card>
           <Alert
-            description="Количество запланированных дней превышает допустимое количество дней по ТК РФ. Выберите другие даты или обновите количество дней отпуска."
-            type="error"
+            title="У вас нет запланированного отпуска"
+            description="Выберите даты отпуска в календаре, чтобы увидеть детали."
+            type="info"
             showIcon
           />
-        )}
-        {/* кнопка будет работать только если количество дней в днях оидаемого и планируемого отпуска не будет равно 0 */}
-        <Button
-          type="primary"
-          onClick={handleSend}
-          disabled={isDaysExceeded || plannedDaysCount === 0}
-          style={{ width: '100%' }}
-        >
-          Отправить запрос
-        </Button>
-        
-      </Card>
+        </Card>
+      ) : (
+        <Card>
+          <Paragraph>
+            <Text type="secondary">
+              Запланированное количество дней отпуска
+            </Text>
+            <Title
+              level={1}
+              style={{
+                margin: '0',
+                color: isDaysExceeded ? 'red' : undefined}}>
+              {plannedVacationDays.length} {/* подсчитываем сколько дней запланировано в календаре в отпуск */}
+            </Title>
+            {/* выводим диапазон дней */}
+            {startDate && endDate && (
+              <Paragraph style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                Запланированный отпуск с {startDate} по {endDate}
+              </Paragraph>
+            )}
+          </Paragraph>
+          {/* проверяем что количество дней меньше или равно дням по ТК РФ */}
+          {isDaysExceeded && (
+            <Alert
+              description="Количество запланированных дней превышает допустимое количество дней по ТК РФ. Выберите другие даты или обновите количество дней отпуска."
+              type="error"
+              showIcon
+            />
+          )}
+          {/* кнопка будет работать только если количество дней в днях оидаемого и планируемого отпуска не будет равно 0 */}
+          <Button
+            type="primary"
+            onClick={handleSend}
+            disabled={isDaysExceeded || plannedDaysCount === 0}
+            style={{ width: '100%' }}
+          >
+            Отправить запрос
+          </Button>
+          
+        </Card>
+      )}
     </Layout>
   )
 };
