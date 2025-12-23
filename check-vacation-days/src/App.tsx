@@ -20,7 +20,7 @@ const contentStyle: React.CSSProperties = {
 
 const App: React.FC = () => {
   const [plannedVacationDays, setPlannedVacationDays] = useState<string[]>([]);
-  const [rfDays] = useState(28); // временное значение
+  const [rfDays, setRfDays] = useState(28); // изменяем значение когда пользователь запрашивает отпуск
   const [vacationStart, setVacationStart] = useState<string>('');
   const [vacationEnd, setVacationEnd] = useState<string>('');
 
@@ -30,7 +30,8 @@ const App: React.FC = () => {
     setVacationEnd(data.end);
   };
   const handleSendVacation = () => {
-    // Логика отправки запроса на отпуск может быть реализована здесь
+    // уменьшение доступных дней на количество запланированных
+    setRfDays(prev => prev - plannedVacationDays.length);
     console.log('Запрос на отпуск отправлен');
   }
 
@@ -41,8 +42,7 @@ const App: React.FC = () => {
         <Layout.Content style={contentStyle}>
           <TopTitle />
           <Layout style={{  display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
-            <DaysInputCard
-            />
+            <DaysInputCard value={rfDays} setValue={setRfDays} />
             
             <DatePeriod 
               onChange={handleDateChange}
