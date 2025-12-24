@@ -51,10 +51,9 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({
   };
 
   React.useEffect(() => {
-    if (isButtonDisabled) {
-      setIsButtonDisabled(false);
-    }
-  }, [plannedVacationDays, vacationStart, vacationEnd, isButtonDisabled]);
+    // Если пользователь изменил даты в календаре, кнопка снова становится активной
+    setIsButtonDisabled(false);
+  }, [plannedVacationDays, vacationStart, vacationEnd]);
 
   return (
   
