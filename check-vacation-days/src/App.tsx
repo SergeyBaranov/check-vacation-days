@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css'
 import { Flex, Layout } from 'antd';
-import { DaysInputcard } from './components/days-input/DaysInputCard';
 import { TopTitle } from './components/top-title/TopTitle';
+import { DaysInputCard } from './components/days-input/DaysInputCard';
 import { DatePeriod } from './components/date-period/DatePeriod';
 import { ShowVacationdatesCard } from './components/show-vacations-dates/ShowVacationdatesCard';
+import { ConfigProvider } from 'antd';
+import ruRU from 'antd/locale/ru_RU';
 
 
 const contentStyle: React.CSSProperties = {
@@ -19,18 +21,21 @@ const contentStyle: React.CSSProperties = {
 
 
 const App: React.FC = () => {
-  const [ukgDays, setUkgDays] = React.useState<number>(0);
-  const [rfDays, setRfDays] = React.useState<number>(0);
-  const [resultUkg, setResultUkg] = React.useState<number>(0); // показываем сколько дней отпуска осталось по UKG
-  const [resultRf, setResultRf] = React.useState<number>(0); // показываем сколько дней отпуска осталось по ТК РФ
-  // const [plannedVacationDays, setPlannedVacationDays] = React.useState<number>(0); //показываем сколько пользователь хочет взять дней отпуска
-  const [plannedVacationDays, setPlannedVacationDays] = React.useState<string[]>([]);
-  
+  const [plannedVacationDays, setPlannedVacationDays] = useState<string[]>([]);
+  const [rfDays, setRfDays] = useState(28); // изменяем значение когда пользователь запрашивает отпуск
+  const [vacationStart, setVacationStart] = useState<string>('');
+  const [vacationEnd, setVacationEnd] = useState<string>('');
 
-  const handleCalculateVacationDays = () => {
-    setResultUkg(ukgDays);
-    setResultRf(rfDays);
-  };  
+  const handleDateChange = (data: { dates: string[], start: string, end: string }) => {
+    setPlannedVacationDays(data.dates);
+    setVacationStart(data.start);
+    setVacationEnd(data.end);
+  };
+  const handleSendVacation = () => {
+    // уменьшение доступных дней на количество запланированных
+    setRfDays(prev => prev - plannedVacationDays.length);
+    console.log('Запрос на отпуск отправлен');
+  }
 
   return (
     <Flex gap="middle">
@@ -38,19 +43,19 @@ const App: React.FC = () => {
         
         <Layout.Content style={contentStyle}>
           <TopTitle />
-          <Layout style={{  display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
-            <DaysInputcard
-              ukgValue={ukgDays}
-              rfValue={rfDays}
-              onUkgChange={setUkgDays}
-              onRfChange={setRfDays}
-              onSubmit={handleCalculateVacationDays}
-            />
-            <DatePeriod  onChange={setPlannedVacationDays}/>
+          <Layout style={{ display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
+            <DaysInputCard value={rfDays} setValue={setRfDays} />
+            <ConfigProvider locale={ruRU}>
+              <DatePeriod 
+                onChange={handleDateChange}
+              />
+            </ConfigProvider>
             <ShowVacationdatesCard
-              ukgDays={resultUkg}
-              rfDays={resultRf}
+              rfDays={rfDays}
               plannedVacationDays={plannedVacationDays}
+              vacationStart={vacationStart}
+              vacationEnd={vacationEnd}
+              onSend={handleSendVacation}
             />
           </Layout>
         </Layout.Content>
