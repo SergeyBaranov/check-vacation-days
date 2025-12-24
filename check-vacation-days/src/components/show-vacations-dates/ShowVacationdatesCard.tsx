@@ -20,6 +20,8 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({
     vacationEnd,
     onSend,
   }) => {
+
+  const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
   {/**проверяем что количество дней меньше или равно дням по ТК РФ и если условие верно - показываем или показываем с ошибкой*/}
   const plannedDaysCount = plannedVacationDays.length;
   const isDaysExceeded = (plannedDaysCount) > rfDays;
@@ -38,14 +40,21 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({
 
   const handleSend = () => {
     notification.success({
-      title: 'Успешно',
-      message: 'Запрос отправлен',
+      message: 'Успешно',
       description: 'Ваш запрос на отпуск отправлен в отдел кадров.',
       placement: 'topRight',
+      title: '',
     });
 
-    onSend?.(); // ← КЛЮЧЕВО
+    setIsButtonDisabled(true); // блокируем кнопку после отправки
+    onSend?.();
   };
+
+  React.useEffect(() => {
+    if (isButtonDisabled) {
+      setIsButtonDisabled(false);
+    }
+  }, [plannedVacationDays, vacationStart, vacationEnd, isButtonDisabled]);
 
   return (
   
@@ -92,7 +101,7 @@ export const ShowVacationdatesCard: React.FC<ShowVacationdatesCardProps> = ({
           <Button
             type="primary"
             onClick={handleSend}
-            disabled={isDaysExceeded || plannedDaysCount === 0}
+            disabled={isDaysExceeded || plannedDaysCount === 0 || isButtonDisabled}
             style={{ width: '100%' }}
           >
             Отправить запрос

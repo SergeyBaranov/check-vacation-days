@@ -5,6 +5,8 @@ import { TopTitle } from './components/top-title/TopTitle';
 import { DaysInputCard } from './components/days-input/DaysInputCard';
 import { DatePeriod } from './components/date-period/DatePeriod';
 import { ShowVacationdatesCard } from './components/show-vacations-dates/ShowVacationdatesCard';
+import { ConfigProvider } from 'antd';
+import ruRU from 'antd/locale/ru_RU';
 
 
 const contentStyle: React.CSSProperties = {
@@ -43,10 +45,11 @@ const App: React.FC = () => {
           <TopTitle />
           <Layout style={{ display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
             <DaysInputCard value={rfDays} setValue={setRfDays} />
-            
-            <DatePeriod 
-              onChange={handleDateChange}
-            />
+            <ConfigProvider locale={ruRU}>
+              <DatePeriod 
+                onChange={handleDateChange}
+              />
+            </ConfigProvider>
             <ShowVacationdatesCard
               rfDays={rfDays}
               plannedVacationDays={plannedVacationDays}

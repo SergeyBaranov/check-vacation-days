@@ -1,6 +1,10 @@
 import React from 'react';
 import { Card, Layout, Typography, DatePicker, Button } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
+import { Checkbox } from 'antd';
+import type { CheckboxProps } from 'antd';
+import 'dayjs/locale/ru';
+dayjs.locale('ru');
 
 interface DatePeriodProps {
   onChange: (data: { dates: string[], start: string, end: string }) => void;
@@ -48,14 +52,19 @@ export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
   };
 
   // функция для рендера дат с подсветкой выходных
-  const dateRender = (current: Dayjs) => {
-    const dayOfWeek = current.day(); // 0 - воскресенье, 6 - суббота
+  const cellRender = (current: string | number | Dayjs) => {
+    const dayjsDate = dayjs.isDayjs(current) ? current : dayjs(current);
+    const dayOfWeek = dayjsDate.day(); // 0 - воскресенье, 6 - суббота
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     return (
       <div style={{ color: isWeekend ? 'red' : 'inherit' }}>
-        {current.date()}
+        {dayjsDate.date()}
       </div>
     );
+  };
+
+  const handleCheckboxChange: CheckboxProps['onChange'] = (e) => {
+    console.log(`checked = ${e.target.checked}`);
   };
 
   return (
@@ -71,8 +80,9 @@ export const DatePeriod: React.FC<DatePeriodProps> = ({ onChange }) => {
           }}
           onChange={handleChange}
           disabledDate={disabledDate} // запрещаем выбирать дату до текущего дня
-          dateRender={dateRender}
+          cellRender={cellRender}
         />
+        <Checkbox onChange={handleCheckboxChange}>Показать производственный календарь</Checkbox>
         {/* кнопка для передачи диапазона дат в поле аппрува */}
         <Button
           type="primary"
