@@ -41,7 +41,7 @@ const App: React.FC = () => {
         
         <Layout.Content style={contentStyle}>
           <TopTitle />
-          <Layout style={{  display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
+          <Layout style={{ display: 'flex', flexDirection: 'row', gap: '2rem', background: 'transparent', justifyContent: 'center' }}>
             <DaysInputCard value={rfDays} setValue={setRfDays} />
             
             <DatePeriod 
