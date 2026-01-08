@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Card, Layout, InputNumber, Typography, Button, Space } from 'antd';
+import React, { useState  } from 'react';
+import { Card, Layout, InputNumber, Typography, Space, Flex } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
+
 
 interface DaysInputCardProps {
   value: number;
@@ -10,37 +12,68 @@ const { Text, Title } = Typography;
 
 export const DaysInputCard: React.FC<DaysInputCardProps> = ({ value, setValue }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [draftValue, setDraftValue] = useState(value);
+
+  const startEditing = () => {
+    setDraftValue(value);
+    setIsEditing(true);
+  };
+
+  const finishEditing = () => {
+    setValue(draftValue);
+    setIsEditing(false);
+  };
+
+  const cancelEditing = () => {
+    setDraftValue(value);
+    setIsEditing(false);
+  };
 
   return (
     <Layout style={{ maxWidth: 300, background: 'transparent', marginBottom: '1rem' }}>
       <Card>
-        {!isEditing ? (
-          <Space
-            align="center"
-            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}
-          >
-            <Title level={1} style={{ fontSize: '48px', margin: 0 }}>{value}</Title>
-            <Text>Количество дней отпуска в текущем году</Text>
-            <Button type="primary" onClick={() => setIsEditing(true)} style={{ width: '100%' }}>
-              Редактировать
-            </Button>
-          </Space>
-        ) : (
-          <Space align="center" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <InputNumber
-              min={0}
-              max={28}
-              value={value}
-              autoFocus
-              onChange={(val) => typeof val === 'number' && setValue(val)}
-              onBlur={() => setIsEditing(false)}
-            />
-            <Text>Количество дней отпуска в текущем году</Text>
-            <Button type="primary" onClick={() => setIsEditing(false)} style={{ width: '100%' }}>
-              Сохранить
-            </Button>
-          </Space>
-        )}
+        <Space vertical size="middle" style={{ width: '100%', textAlign: 'left' }}>
+          {/* Число / инпут */}
+          <Flex align="center" gap={8}>
+            {!isEditing ? (
+              <>
+                <Title level={1} style={{ fontSize: 48, margin: 0 }}>
+                  {value}
+                </Title>
+                <EditOutlined
+                  style={{ fontSize: 20, cursor: 'pointer', color: '#1677ff' }}
+                  onClick={startEditing}
+                />
+              </>
+            ) : (
+              <InputNumber
+                min={0}
+                max={28}
+                value={draftValue}
+                autoFocus
+                onChange={(val) => typeof val === 'number' && setDraftValue(val)}
+                onBlur={finishEditing}
+                style={{
+                  fontSize: 48,
+                  lineHeight: '1',
+                  padding: 0,
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    finishEditing();
+                  }
+                  if (e.key === 'Escape') {
+                    cancelEditing();
+                  }
+                }}
+              />
+            )}
+          </Flex>
+
+          <Text style={{textAlign: 'left'}}>
+            Количество дней отпуска в текущем году
+          </Text>
+        </Space>
       </Card>
     </Layout>
   );
