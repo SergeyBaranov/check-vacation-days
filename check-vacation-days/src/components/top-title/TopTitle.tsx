@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Typography  } from 'antd';
-import { UserAvatar } from '../user/userAvatar';
+import { UserAvatar } from '../user/UserAvatar';
 import { useState } from 'react';
 
 const { Title, Paragraph, Text } = Typography;
