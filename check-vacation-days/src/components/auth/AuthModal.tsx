@@ -38,7 +38,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose, onLogin }) => {
       message.error(data.error);
     } else {
       message.success("Вы вошли");
-      onLogin(username || email);
+      onLogin(data.username);
       onClose();
     }
   };
@@ -54,7 +54,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose, onLogin }) => {
               <>
                 <Input placeholder="Email" onChange={e => setEmail(e.target.value)} />
                 <Input.Password placeholder="Пароль" onChange={e => setPassword(e.target.value)} style={{ marginTop: 8 }} />
-                <button onClick={login} style={{ marginTop: 12 }}>Войти</button>
+                <Button type="primary" onClick={login} style={{ marginTop: 12 }}>Войти</Button>
               </>
             )
           },
