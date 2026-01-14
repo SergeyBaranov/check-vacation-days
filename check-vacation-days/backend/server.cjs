@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+const SECRET = "mysecretkey";
+
 // 1. Импортируем зависимости
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -38,26 +41,55 @@ app.post("/api/register", async (req, res) => {
 });
 
 // 6. Маршрут логина
+// app.post("/api/login", (req, res) => {
+//   const { email, password } = req.body;
+
+//   if (!email || !password) return res.status(400).json({ error: "Все поля обязательны" });
+
+//   db.get(
+//     "SELECT * FROM users WHERE email = ?",
+//     [email],
+//     async (err, user) => {
+//       if (!user) return res.status(400).json({ error: "Пользователь не найден" });
+
+//       const match = await bcrypt.compare(password, user.password_hash);
+//       if (!match) return res.status(400).json({ error: "Неверный пароль" });
+
+//       res.json({ message: "Успешный вход", username: user.username });
+//     }
+//   );
+// });
+
 app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
-
   if (!email || !password) return res.status(400).json({ error: "Все поля обязательны" });
 
-  db.get(
-    "SELECT * FROM users WHERE email = ?",
-    [email],
-    async (err, user) => {
-      if (!user) return res.status(400).json({ error: "Пользователь не найден" });
+  db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+    if (!user) return res.status(400).json({ error: "Пользователь не найден" });
 
-      const match = await bcrypt.compare(password, user.password_hash);
-      if (!match) return res.status(400).json({ error: "Неверный пароль" });
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (!match) return res.status(400).json({ error: "Неверный пароль" });
 
-      res.json({ message: "Успешный вход", username: user.username });
-    }
-  );
+    // создаём токен
+    const token = jwt.sign({ id: user.id, username: user.username }, SECRET, { expiresIn: "7d" });
+
+    res.json({ message: "Успешный вход", token });
+  });
 });
 
-// 7. Запуск сервера
+// 7. Новый защищённый маршрут для получения данных пользователя
+app.get("/api/profile", (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Нет токена" });
+
+  jwt.verify(token, SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: "Неверный токен" });
+    res.json({ id: user.id, username: user.username });
+  });
+});
+
+// 8. Запуск сервера
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
 });
