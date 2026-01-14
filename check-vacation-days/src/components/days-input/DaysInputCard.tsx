@@ -28,6 +28,7 @@ export const DaysInputCard: React.FC<DaysInputCardProps> = ({ value, setValue })
     setDraftValue(value);
     setIsEditing(false);
   };
+  
 
   return (
     <Layout style={{ maxWidth: 300, background: 'transparent', marginBottom: '1rem' }}>

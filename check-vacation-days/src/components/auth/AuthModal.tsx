@@ -4,7 +4,7 @@ import { useState } from "react";
 type Props = {
   open: boolean;
   onClose: () => void;
-  onLogin: (username: string) => void;
+  onLogin: (username: string, token: string) => void;
 };
 
 export const AuthModal: React.FC<Props> = ({ open, onClose, onLogin }) => {
@@ -38,7 +38,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose, onLogin }) => {
       message.error(data.error);
     } else {
       message.success("Вы вошли");
-      onLogin(data.username);
+      onLogin(data.username, data.token);
       onClose();
     }
   };
